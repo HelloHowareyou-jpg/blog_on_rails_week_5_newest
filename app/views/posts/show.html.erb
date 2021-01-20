@@ -1,0 +1,53 @@
+<h3><%=@post.title%></h3>
+<p><%= @post.body %></p>
+<div>
+    Created by: <%= @post.user&.full_name || "DELETED" %>
+</div>
+<div>
+    <small>
+<p>Posted : <%= time_ago_in_words(@post.created_at)  %> </p>
+</small>
+<small>
+<p>Last Edited : <%= time_ago_in_words(@post.updated_at)  %> </p>
+</small>
+<small>
+    Seen : <%= pluralize(@post.view_count, 'time')%>
+</small>
+</div>
+<small>
+    <%= link_to("Edit", edit_post_path(@post.id))%> | 
+    <%= link_to("Delete",post_path(@post),method: :delete,data:{confirm: "Are you sure ?"})%>
+</small>
+<h3>Give your comment answer here:</h3>
+<%= form_with model:[@post,@comment],local: true do |form|%>
+<ul>
+<% if @comment.errors.full_messages.each do |msg|%>
+
+    <li>
+        <%= msg %>
+       
+    </li>
+<% end %>
+<% end %>
+</ul>
+<%= form.text_area :body, 
+cols: 50, 
+rows: 5, 
+placeholder: 'What are your thoughts?'%>
+<%= form.submit %>
+
+<% end %> 
+
+<h3>Awesome Comments</h3>
+<% @comments.each do |comment|%>
+<p>
+<%= comment.body %>
+
+<div>
+    Commented by:
+    <%= comment.user&.full_name || "DELETED" %>
+</div>
+<%= link_to "Delete",post_comment_path(@post,comment), method: :delete,data: {confirm: "Are you sure?"} %>
+<hr>
+</p>
+<% end %> 
